@@ -1,0 +1,11 @@
+.gradle/
+**/build/
+local.properties
+*.iml
+
+# User-facing artifacts are regenerated locally.
+outputs/
+
+# Large staged archive trees from packaging experiments.
+work/WebViewTestBed-source-*/
+work/source-package-*/
