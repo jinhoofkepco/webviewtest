@@ -75,3 +75,37 @@ Summary:
 - Final run responses: `outputs/download-mission-timeout-download-20260616-082326/cycle-01-20260616-082341-responses.md`
 
 Note: the final APK includes the filename-preservation patch and built successfully. ADB disconnected after that build, so that last filename-only patch was build-verified but not re-run on-device.
+
+## Local Revival After Login
+
+Date: 2026-06-16 KST
+
+Device: `SM_S918N` / `R3CW201NLGL`
+
+Output folder: `outputs/download-revival-patched-20260616-093251`
+
+This run reinstalled the debug APK, required a fresh ChatGPT WebView login, then reran `RUN DL x3` once. The first post-login attempt exposed a current ChatGPT UI change: the attach button could open a Korean menu (`카메라`, `사진`, `파일`, `이미지 만들기`, etc.) after the original single menu probe had already failed, causing `attach-not-delivered`.
+
+Patch applied before the successful revival:
+
+- Prefer labeled attach candidates over unlabeled nearby toolbar buttons.
+- After JS fallback opens the attach menu, probe the upload menu one more time.
+- If the menu still cannot be resolved, fall back to direct `input[type=file]` click.
+
+Verified patched run:
+
+| Batch | Strategy | Finish | Download Result |
+| --- | --- | --- | --- |
+| 1 | `redrawImage_photoMenu_downloadProbe` | stable | `http-download-requested:webview-redrawImage_photoMenu_downloadProbe-batch-1.png` |
+| 2 | `longText_fileInput_nativeTextSave` | stable | `assistant-text-save-started:3659` |
+| 3 | `downloadableText_fileMenu_blobBridge` | stable | `clicked-download-button:webview_download_test.txt 다운로드` |
+
+Summary:
+
+- Batch finished: 3/3
+- Stable batches: 3/3
+- Timeout: 0
+- File chooser requested/delivered: 3/3
+- Download saved by native bridge: 1
+- Download enqueued by `DownloadManager`: 2
+- Crash/ANR signals: 0
